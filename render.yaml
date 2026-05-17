@@ -1,0 +1,15 @@
+services:
+  - type: worker
+    name: walro
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m walro.bot
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: ALLOWED_TELEGRAM_USER_ID
+        sync: false
+      - key: WALRO_TIMEZONE
+        value: Asia/Beirut
+      - key: WALRO_DB_PATH
+        value: data/walro.db
