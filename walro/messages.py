@@ -40,8 +40,10 @@ def format_summary(summary: dict, breakdown: list[Row] | None = None) -> str:
     else:
         lines.append("Today: outside this budget period")
 
+    total_remaining = float(summary['today_remaining_usd']) + float(summary['surplus_usd'])
     lines += [
         f"Surplus: {signed_money(float(summary['surplus_usd']))}",
+        f"Total balance: {signed_money(total_remaining)}",
         f"Days left: {summary['days_left']}",
     ]
 
@@ -71,13 +73,15 @@ def format_transaction_reply(tx: Row, summary: dict, category_name: str | None =
     original = f"{tx['original_amount']:g} {tx['currency'].upper()}"
     usd = money(float(tx["amount_usd"]))
     cat = f" [{tx['category_code']}]" if tx["category_code"] else ""
+    total_remaining = float(summary['today_remaining_usd']) + float(summary['surplus_usd'])
 
     if tx["type"] == "expense":
         return (
             f"Logged daily expense{cat}: {original} = {usd}\n"
             f"Comment: {tx['comment']}\n\n"
             f"Today remaining: {signed_money(float(summary['today_remaining_usd']))}\n"
-            f"Surplus: {signed_money(float(summary['surplus_usd']))}"
+            f"Surplus: {signed_money(float(summary['surplus_usd']))}\n"
+            f"Total balance: {signed_money(total_remaining)}"
         )
 
     if tx["type"] == "surplus_expense":
@@ -85,7 +89,8 @@ def format_transaction_reply(tx: Row, summary: dict, category_name: str | None =
             f"Logged surplus expense{cat}: {original} = {usd}\n"
             f"Comment: {tx['comment']}\n\n"
             f"Today remaining: {signed_money(float(summary['today_remaining_usd']))}\n"
-            f"Surplus: {signed_money(float(summary['surplus_usd']))}"
+            f"Surplus: {signed_money(float(summary['surplus_usd']))}\n"
+            f"Total balance: {signed_money(total_remaining)}"
         )
 
     return (
@@ -94,7 +99,8 @@ def format_transaction_reply(tx: Row, summary: dict, category_name: str | None =
         f"New total budget: {money(float(summary['total_budget_usd']))}\n"
         f"New daily allowance: {money(float(summary['daily_allowance_usd']))}\n"
         f"Today remaining: {signed_money(float(summary['today_remaining_usd']))}\n"
-        f"Surplus: {signed_money(float(summary['surplus_usd']))}"
+        f"Surplus: {signed_money(float(summary['surplus_usd']))}\n"
+        f"Total balance: {signed_money(total_remaining)}"
     )
 
 
